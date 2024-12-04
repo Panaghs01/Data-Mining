@@ -28,7 +28,7 @@ df = df.round(
 
 df.replace({"finishing ":"finishing"},inplace = True)
 df.replace({'sweing':'sewing'},inplace = True) #this is needless
-df.replace({'sewing':-1},inplace = True)
+df.replace({'sewing':0},inplace = True)
 df.replace({'finishing':1},inplace = True)
 
 print(df)
@@ -71,17 +71,33 @@ upper = q3 + 1.5*iqr
 
 # print(q1,q3,median,iqr,upper,lower)
 
-plt.figure(figsize=(15, 6), dpi=80)
-plt.boxplot(over_time_list)
+
+fig, (ax_box, ax_hist) = plt.subplots(
+    nrows=2, 
+    sharex=True,  # Share the x-axis
+    gridspec_kw={"height_ratios": [1, 3]}  # Boxplot smaller than histogram
+)
+ax_box.boxplot(df['over_time'], vert=False, patch_artist=True)
+ax_box.spines['bottom'].set_visible(False)  # Remove bottom border
+ax_box.spines['top'].set_visible(False)  # Optional: hide top border
+ax_box.spines['right'].set_visible(False)  # Optional: hide right border
+ax_box.spines['left'].set_visible(False)  # Optional: hide left border
+ax_box.set_yticks([])  # Remove y-axis ticks for cleanliness
+
+ax_hist.hist(df['over_time'], edgecolor='yellow', color='purple')
+ax_hist.set_ylabel('Frequency')
+ax_hist.set_xlabel('Values')
+ax_hist.spines['top'].set_visible(False)  # Remove top border (next to boxplot)
+
+plt.subplots_adjust(hspace=0)
 plt.show()
+# clean_df = pd.DataFrame(df['over_time'].where((df['over_time'] <= upper) & (
+#                 df['over_time'] >= lower)))
+# clean_df.dropna(inplace = True)
 
-clean_df = pd.DataFrame(df['over_time'].where((df['over_time'] <= upper) & (
-                df['over_time'] >= lower)))
-clean_df.dropna(inplace = True)
 
-
-plt.boxplot(clean_df)
-plt.show()
+# plt.boxplot(clean_df)
+# plt.show()
 
 
 
