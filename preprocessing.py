@@ -16,7 +16,7 @@ pd.set_option('display.max_columns',None)
 
 
 df = pd.read_csv(
-    r"""C:\Users\user\Desktop\code\Data_mining\garments_worker_productivity.csv""")
+    r"""C:/Users/Admin/Desktop/Data-Mining/garments_worker_productivity.csv""")
 
 #replacing NaN values with 0
 df.fillna({'wip':0},inplace = True)
@@ -45,17 +45,17 @@ correlation_matrix = []
 corr_df = df[['department','team','no_of_workers','no_of_style_change','targeted_productivity',
               'actual_productivity','smv','wip','over_time','incentive','idle_time','idle_men']]
 
-for i in corr_df.columns:
-    print()
-    correlation_actual = df[['actual_productivity',i]].corr(
-        method='pearson')
-    correlation_ratio = df[['productivity_ratio',i]].corr(
-        method='pearson')
-    plt.plot(correlation_actual)
-    plt.show()
-    print(correlation_actual)
-    print(correlation_ratio)
-    print()
+# for i in corr_df.columns:
+#     print()
+#     correlation_actual = df[['actual_productivity',i]].corr(
+#         method='pearson')
+#     correlation_ratio = df[['productivity_ratio',i]].corr(
+#         method='pearson')
+#     plt.plot(correlation_actual)
+#     plt.show()
+#     print(correlation_actual)
+#     print(correlation_ratio)
+#     print()
 
 # Bloxplots!
 def bloxplot(attribute):
@@ -87,22 +87,27 @@ def pretty_graphs(attribute):
     ax_hist.hist(df[attribute], edgecolor='yellow', color='purple')
     ax_hist.set_ylabel('Frequency')
     ax_hist.set_xlabel('Values')
+    ax_hist.set_title(f'{attribute}')
     ax_hist.spines['top'].set_visible(False)  
 
     plt.subplots_adjust(hspace=0)
     plt.show()
     
-    
-    
-for attr in 
-#Boxplot outlier detection
-over_time_list = [x for x in df['over_time']]
-over_time_list = sorted(over_time_list)
-overtime_array = np.array(over_time_list)
 
-overtime_box = bloxplot(overtime_array)
-idle_time_box = bloxplot()
-idle_men_box = bloxplot()
+for attr in df:
+    if(attr != 'date' and attr != 'quarter' and attr != 'department' and attr != 'day' and attr != 'team'):
+        #Boxplot outlier detection
+        attrlist = [x for x in df[attr]]
+        attrlist = sorted(attrlist)
+        attr_array = np.array(attrlist)
+        pretty_graphs(attr)
+
+# overtime_box = bloxplot(overtime_array)
+# idle_time_box = bloxplot()
+# idle_men_box = bloxplot()
+
+#df with all the outliers!!!!!
+surprise_tool_that_will_help_us_later = pd.DataFrame()
 
 
 
