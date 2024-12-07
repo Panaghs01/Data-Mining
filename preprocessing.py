@@ -100,7 +100,7 @@ for attr in df:
         attrlist = [x for x in df[attr]]
         attrlist = sorted(attrlist)
         attr_array = np.array(attrlist)
-        pretty_graphs(attr)
+        # pretty_graphs(attr)
 
 # overtime_box = bloxplot(overtime_array)
 # idle_time_box = bloxplot()
@@ -108,6 +108,25 @@ for attr in df:
 
 #df with all the outliers!!!!!
 surprise_tool_that_will_help_us_later = pd.DataFrame()
+
+
+
+mean = np.mean(df['actual_productivity'])
+std = np.std(df['actual_productivity'])
+normal_range=(mean-3*std,mean+3*std)
+print(normal_range)
+
+minprod = min(df['actual_productivity'])
+maxprod = max(df['actual_productivity'])
+print(minprod,maxprod)
+outliers = []
+for row in df['actual_productivity']:
+    z = abs(row-mean)/std
+    if (z > 3):
+        outliers.append(row)
+        
+print(outliers)
+
 
 
 
