@@ -51,46 +51,61 @@ for i in corr_df.columns:
         method='pearson')
     correlation_ratio = df[['productivity_ratio',i]].corr(
         method='pearson')
+    plt.plot(correlation_actual)
+    plt.show()
     print(correlation_actual)
     print(correlation_ratio)
     print()
+
+# Bloxplots!
+def bloxplot(attribute):
+    #Give attribute as an array made from the df column
+    #Calculate the boxplot
+    median = np.median(attribute)
+    q1 = np.quantile(attribute, 0.25)
+    q3 = np.quantile(attribute, 0.75)
+    iqr = q3-q1
+    lower_inner_fence = q1 - 1.5*iqr
+    upper_inner_fence = q3 + 1.5*iqr
+    
+    return (median, iqr, lower_inner_fence, upper_inner_fence)
+
+def pretty_graphs(attribute):
+    #This makes the histogram/boxplot graph look good
+    fig, (ax_box, ax_hist) = plt.subplots(
+        nrows=2, 
+        sharex=True,  # Share the x-axis
+        gridspec_kw={"height_ratios": [1, 3]}  # Boxplot smaller than histogram
+    )
+    ax_box.boxplot(df[attribute], vert=False, patch_artist=True)
+    ax_box.spines['bottom'].set_visible(False)  
+    ax_box.spines['top'].set_visible(False)  
+    ax_box.spines['right'].set_visible(False)  
+    ax_box.spines['left'].set_visible(False)  
+    ax_box.set_yticks([])  
+    
+    ax_hist.hist(df[attribute], edgecolor='yellow', color='purple')
+    ax_hist.set_ylabel('Frequency')
+    ax_hist.set_xlabel('Values')
+    ax_hist.spines['top'].set_visible(False)  
+
+    plt.subplots_adjust(hspace=0)
+    plt.show()
     
     
     
+for attr in 
 #Boxplot outlier detection
 over_time_list = [x for x in df['over_time']]
 over_time_list = sorted(over_time_list)
-over = np.array(over_time_list)
+overtime_array = np.array(over_time_list)
 
-median = np.median(over)
-q1 = np.quantile(over, 0.25)
-q3 = np.quantile(over, 0.75)
-iqr = q3-q1
-lower = q1 - 1.5*iqr
-upper = q3 + 1.5*iqr
-
-# print(q1,q3,median,iqr,upper,lower)
+overtime_box = bloxplot(overtime_array)
+idle_time_box = bloxplot()
+idle_men_box = bloxplot()
 
 
-fig, (ax_box, ax_hist) = plt.subplots(
-    nrows=2, 
-    sharex=True,  # Share the x-axis
-    gridspec_kw={"height_ratios": [1, 3]}  # Boxplot smaller than histogram
-)
-ax_box.boxplot(df['over_time'], vert=False, patch_artist=True)
-ax_box.spines['bottom'].set_visible(False)  # Remove bottom border
-ax_box.spines['top'].set_visible(False)  # Optional: hide top border
-ax_box.spines['right'].set_visible(False)  # Optional: hide right border
-ax_box.spines['left'].set_visible(False)  # Optional: hide left border
-ax_box.set_yticks([])  # Remove y-axis ticks for cleanliness
 
-ax_hist.hist(df['over_time'], edgecolor='yellow', color='purple')
-ax_hist.set_ylabel('Frequency')
-ax_hist.set_xlabel('Values')
-ax_hist.spines['top'].set_visible(False)  # Remove top border (next to boxplot)
-
-plt.subplots_adjust(hspace=0)
-plt.show()
 # clean_df = pd.DataFrame(df['over_time'].where((df['over_time'] <= upper) & (
 #                 df['over_time'] >= lower)))
 # clean_df.dropna(inplace = True)
