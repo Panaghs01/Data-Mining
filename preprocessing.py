@@ -5,34 +5,40 @@ import pandas as pd
 # ----------------------------------------------------------------- #
 
 # Bloxplots!
-def bloxplot(attribute):
+def bloxplot(dataf):
     # Give attribute as an array made from the df column
     # Calculate the boxplot
-    median = np.median(df[attribute])
-    q1 = np.quantile(df[attribute], 0.25)
-    q3 = np.quantile(df[attribute], 0.75)
-    iqr = q3 - q1
-    lower_inner_fence = q1 - 1.5 * iqr
-    upper_inner_fence = q3 + 1.5 * iqr
+    att_list = ['date', 'quarter', 'day', 'department', 'team', 
+            'actual_productivity', 'no_of_style_change', 'productivity_ratio']
+    temp = pd.DataFrame()
+    for attr in dataf:
+        if (attr not in att_list):
+            q1 = np.quantile(dataf[attr], 0.25)
+            q3 = np.quantile(dataf[attr], 0.75)
+            iqr = q3 - q1
+            lower_inner_fence = q1 - 1.5 * iqr
+            upper_inner_fence = q3 + 1.5 * iqr
+            temp = pd.concat([temp,dataf.where((dataf[attr] > upper_inner_fence) or (dataf[attr] < lower_inner_fence))])
+            temp.insert(len(outlier_df.columns),'Outlying_attribute',attribute)
+    return dataf
 
-    outlier_df = df[(df[attribute] > upper_inner_fence) | (df[attribute] < lower_inner_fence)]
-    outlier_df.insert(len(outlier_df.columns),'Outlying_attribute',attribute)
-    
-    return outlier_df
 
-def mrclean(attribute):
+
+def mrclean(dataf):
     # Give attribute as an array made from the df column
     # Calculate the boxplot
-    median = np.median(df[attribute])
-    q1 = np.quantile(df[attribute], 0.25)
-    q3 = np.quantile(df[attribute], 0.75)
-    iqr = q3 - q1
-    lower_inner_fence = q1 - 1.5 * iqr
-    upper_inner_fence = q3 + 1.5 * iqr
+    att_list = ['date', 'quarter', 'day', 'department', 'team', 
+            'actual_productivity', 'no_of_style_change', 'productivity_ratio']
 
-    clean_df = df[(df[attribute] <= upper_inner_fence) & (df[attribute] >= lower_inner_fence)]
-
-    return clean_df
+    for attr in dataf:
+        if (attr not in att_list):
+            q1 = np.quantile(dataf[attr], 0.25)
+            q3 = np.quantile(dataf[attr], 0.75)
+            iqr = q3 - q1
+            lower_inner_fence = q1 - 1.5 * iqr
+            upper_inner_fence = q3 + 1.5 * iqr
+            dataf = dataf[(dataf[attr] <= upper_inner_fence) & (dataf[attr] >= lower_inner_fence)]
+    return dataf
 
 # Showing graph stuff
 def pretty_graphs(attribute):
@@ -140,6 +146,7 @@ plt.show()
 
 #Storing outliers in a new df
 outlier_df = pd.DataFrame()
+clean_df = pd.DataFrame()
 
 # Do not detect outliers using boxplot on these attributes
 # We detect outliers using z score for actual productivity
@@ -149,8 +156,7 @@ outlier_df = pd.DataFrame()
 # Finally, number of style change is integers, either 0,1 or 2 
 att_list = ['date', 'quarter', 'day', 'department', 'team', 
             'actual_productivity', 'no_of_style_change', 'productivity_ratio']
-            
- 
+
 #Boxplot  outlier detection 
 for attr in df:
     if (attr not in att_list):
@@ -159,12 +165,17 @@ for attr in df:
         pretty_graphs(attr)
 
 
-#outlier_df.dropna(inplace=True)
 
-print("night")
+outlier_df = bloxplot(df)
+
+print("Outlier Df")
 print(outlier_df)
-print("night")
 
-clean_df = mrclean("idle_time")
 
 # ----------------------------------------------------------------- #
+
+
+print("Clean Df")
+clean_df = mrclean(df)
+print(clean_df)
+
