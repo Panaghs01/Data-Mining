@@ -133,6 +133,9 @@ for row in df['actual_productivity']:
         
 print(outliers)
 
+plt.hist(df['actual_productivity'], bins=30, edgecolor='yellow', color='purple')
+plt.show()
+
 # ---------------------------------------------------------------------- #
 
 #Storing outliers in a new df
@@ -146,7 +149,6 @@ outlier_df = pd.DataFrame()
 # Finally, number of style change is integers, either 0,1 or 2 
 att_list = ['date', 'quarter', 'day', 'department', 'team', 
             'actual_productivity', 'no_of_style_change', 'productivity_ratio']
-aaaaaa = ['idle_time', 'idle_men']
               
 #Boxplot  outlier detection 
 for attr in df:
@@ -167,8 +169,3 @@ print("night")
 clean_df = mrclean("idle_time")
 
 # ----------------------------------------------------------------- #
-
-print("night")
-print(outlier_df)
-print("night")
-
