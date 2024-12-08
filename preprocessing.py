@@ -143,8 +143,16 @@ print(outliers)
 
 #Storing outliers in a new df
 outlier_df = pd.DataFrame()
-att_list = ['date', 'quarter', 'day', 'department', 'team', 'actual_productivity', 'no_of_style_change', 'productivity_ratio']
+# Do not detect outliers using boxplot on these attributes
+# We detect outliers using z score for actual productivity
+# No reason to detect outliers in the first five,
+# Productivity ratio is calculated using the data, so there isnt a reason to
+# Detect outliers there too
+# Finally, number of style change is integers, either 0,1 or 2 
+att_list = ['date', 'quarter', 'day', 'department', 'team', 
+            'actual_productivity', 'no_of_style_change', 'productivity_ratio']
 aaaaaa = ['idle_time', 'idle_men']
+
 for attr in df:
     if (attr not in att_list):
         outlier_df= pd.concat([outlier_df, bloxplot(attr)])
@@ -163,9 +171,3 @@ print("night")
 print(outlier_df)
 print("night")
 
-for row in df['actual_productivity']:
-    z = abs(row-mean)/std
-    if (z > 3):
-        outliers.append(row)
-        
-print(outliers)
