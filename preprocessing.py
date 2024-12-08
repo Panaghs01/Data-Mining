@@ -16,7 +16,8 @@ def bloxplot(attribute):
     upper_inner_fence = q3 + 1.5 * iqr
 
     outlier_df = df[(df[attribute] > upper_inner_fence) | (df[attribute] < lower_inner_fence)]
-
+    outlier_df['Outlying_attribute']= attribute
+    
     return outlier_df
 
 def mrclean(attribute):
@@ -108,13 +109,6 @@ outlier_df = pd.DataFrame()
 #     print(correlation_ratio)
 #     print()
 
-#Boxplot outlier detection (showing graphs)
-for attr in df:
-    if(attr != 'date' and attr != 'quarter' and attr != 'department' and attr != 'day' and attr != 'team'):
-        attrlist = [x for x in df[attr]]
-        attrlist = sorted(attrlist)
-        attr_array = np.array(attrlist)
-        pretty_graphs(attr)
         
         
 # ---------------------------------------------------------------------- #
@@ -125,11 +119,11 @@ for attr in df:
 mean = np.mean(df['actual_productivity'])
 std = np.std(df['actual_productivity'])
 normal_range=(mean-3*std,mean+3*std)
-#print(normal_range)
+print(normal_range)
 
 minprod = min(df['actual_productivity'])
 maxprod = max(df['actual_productivity'])
-#print(minprod,maxprod)
+print(minprod,maxprod)
 outliers = []
 
 for row in df['actual_productivity']:
@@ -143,6 +137,7 @@ print(outliers)
 
 #Storing outliers in a new df
 outlier_df = pd.DataFrame()
+
 # Do not detect outliers using boxplot on these attributes
 # We detect outliers using z score for actual productivity
 # No reason to detect outliers in the first five,
@@ -152,10 +147,16 @@ outlier_df = pd.DataFrame()
 att_list = ['date', 'quarter', 'day', 'department', 'team', 
             'actual_productivity', 'no_of_style_change', 'productivity_ratio']
 aaaaaa = ['idle_time', 'idle_men']
-
+              
+#Boxplot  outlier detection 
 for attr in df:
     if (attr not in att_list):
         outlier_df= pd.concat([outlier_df, bloxplot(attr)])
+        #Boxplot outlier detection (showing graphs)
+        attrlist = [x for x in df[attr]]
+        attrlist = sorted(attrlist)
+        attr_array = np.array(attrlist)
+        pretty_graphs(attr)
 
 #outlier_df.dropna(inplace=True)
 
