@@ -10,7 +10,8 @@ def bloxplot(dataf):
     # Calculate the boxplot
     att_list = ['date', 'quarter', 'day', 'department', 'team', 
             'actual_productivity', 'no_of_style_change', 'productivity_ratio']
-    temp = pd.DataFrame()
+    
+    outlier_df = pd.DataFrame()
     for attr in dataf:
         if (attr not in att_list):
             q1 = np.quantile(dataf[attr], 0.25)
@@ -18,9 +19,15 @@ def bloxplot(dataf):
             iqr = q3 - q1
             lower_inner_fence = q1 - 1.5 * iqr
             upper_inner_fence = q3 + 1.5 * iqr
-            temp = pd.concat([temp,dataf.where((dataf[attr] > upper_inner_fence) or (dataf[attr] < lower_inner_fence))])
-            temp.insert(len(outlier_df.columns),'Outlying_attribute',attribute)
-    return dataf
+            temp = dataf[(dataf[attr] > upper_inner_fence) | (dataf[attr] < lower_inner_fence)]
+            temp.insert(len(temp.columns)-1,'Outlying_attribute',attr)
+            outlier_df = pd.concat([outlier_df,temp])            
+    
+    #Remove duplicate rows based on every attribute other that 'Outlying_attribute'
+    attr = [x for x in dataf]
+    outlier_df.drop_duplicates(subset = attr, inplace = True)
+      
+    return outlier_df
 
 
 
@@ -157,25 +164,23 @@ clean_df = pd.DataFrame()
 att_list = ['date', 'quarter', 'day', 'department', 'team', 
             'actual_productivity', 'no_of_style_change', 'productivity_ratio']
 
-#Boxplot  outlier detection 
+
+#Boxplot outlier detection 
 for attr in df:
     if (attr not in att_list):
-        outlier_df= pd.concat([outlier_df, bloxplot(attr)])
         #Showing graphs
         pretty_graphs(attr)
 
-
-
 outlier_df = bloxplot(df)
 
-print("Outlier Df")
-print(outlier_df)
 
+print(outlier_df)
+print("Outlier Df")
 
 # ----------------------------------------------------------------- #
 
 
-print("Clean Df")
+
 clean_df = mrclean(df)
 print(clean_df)
-
+print("Clean Df")
