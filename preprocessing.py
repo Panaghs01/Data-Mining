@@ -115,6 +115,31 @@ for attr in df:
         attrlist = sorted(attrlist)
         attr_array = np.array(attrlist)
         pretty_graphs(attr)
+        
+        
+# ---------------------------------------------------------------------- #
+# Outlier detection in actual productivity using z score
+# There are no outliers so this returns nothing, however we show how it could
+# Be done, were there outliers in this distribution
+
+mean = np.mean(df['actual_productivity'])
+std = np.std(df['actual_productivity'])
+normal_range=(mean-3*std,mean+3*std)
+#print(normal_range)
+
+minprod = min(df['actual_productivity'])
+maxprod = max(df['actual_productivity'])
+#print(minprod,maxprod)
+outliers = []
+
+for row in df['actual_productivity']:
+    z = abs(row-mean)/std
+    if (z > 3):
+        outliers.append(row)
+        
+print(outliers)
+
+# ---------------------------------------------------------------------- #
 
 #Storing outliers in a new df
 outlier_df = pd.DataFrame()
@@ -134,19 +159,13 @@ clean_df = mrclean("idle_time")
 
 # ----------------------------------------------------------------- #
 
-mean = np.mean(df['actual_productivity'])
-std = np.std(df['actual_productivity'])
-normal_range=(mean-3*std,mean+3*std)
-#print(normal_range)
-
-minprod = min(df['actual_productivity'])
-maxprod = max(df['actual_productivity'])
-#print(minprod,maxprod)
-outliers = []
+print("night")
+print(outlier_df)
+print("night")
 
 for row in df['actual_productivity']:
     z = abs(row-mean)/std
     if (z > 3):
         outliers.append(row)
         
-#print(outliers)
+print(outliers)
