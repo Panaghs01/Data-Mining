@@ -16,7 +16,22 @@ def bloxplot(attribute):
     upper_inner_fence = q3 + 1.5 * iqr
 
     outlier_df = df[(df[attribute] > upper_inner_fence) | (df[attribute] < lower_inner_fence)]
+
     return outlier_df
+
+def mrclean(attribute):
+    # Give attribute as an array made from the df column
+    # Calculate the boxplot
+    median = np.median(df[attribute])
+    q1 = np.quantile(df[attribute], 0.25)
+    q3 = np.quantile(df[attribute], 0.75)
+    iqr = q3 - q1
+    lower_inner_fence = q1 - 1.5 * iqr
+    upper_inner_fence = q3 + 1.5 * iqr
+
+    clean_df = df[(df[attribute] <= upper_inner_fence) & (df[attribute] >= lower_inner_fence)]
+
+    return clean_df
 
 # Showing graph stuff
 def pretty_graphs(attribute):
@@ -33,7 +48,7 @@ def pretty_graphs(attribute):
     ax_box.spines['left'].set_visible(False)
     ax_box.set_yticks([])
 
-    ax_hist.hist(df[attribute], edgecolor='yellow', color='purple')
+    ax_hist.hist(df[attribute], bins=20, edgecolor='yellow', color='purple')
     ax_hist.set_ylabel('Frequency')
     ax_hist.set_xlabel('Values')
     ax_hist.set_title(f'{attribute}')
@@ -99,7 +114,7 @@ for attr in df:
         attrlist = [x for x in df[attr]]
         attrlist = sorted(attrlist)
         attr_array = np.array(attrlist)
-        #pretty_graphs(attr)
+        pretty_graphs(attr)
 
 #Storing outliers in a new df
 outlier_df = pd.DataFrame()
@@ -107,13 +122,15 @@ att_list = ['date', 'quarter', 'day', 'department', 'team', 'actual_productivity
 aaaaaa = ['idle_time', 'idle_men']
 for attr in df:
     if (attr not in att_list):
-        outlier_df = pd.concat([outlier_df, bloxplot(attr)])
+        outlier_df= pd.concat([outlier_df, bloxplot(attr)])
 
-outlier_df.dropna(inplace=True)
+#outlier_df.dropna(inplace=True)
 
 print("night")
 print(outlier_df)
 print("night")
+
+clean_df = mrclean("idle_time")
 
 # ----------------------------------------------------------------- #
 
