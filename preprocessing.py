@@ -16,7 +16,7 @@ def bloxplot(attribute):
     upper_inner_fence = q3 + 1.5 * iqr
 
     outlier_df = df[(df[attribute] > upper_inner_fence) | (df[attribute] < lower_inner_fence)]
-    outlier_df['Outlying_attribute']= attribute
+    outlier_df.insert(len(outlier_df.columns),'Outlying_attribute',attribute)
     
     return outlier_df
 
@@ -149,16 +149,15 @@ outlier_df = pd.DataFrame()
 # Finally, number of style change is integers, either 0,1 or 2 
 att_list = ['date', 'quarter', 'day', 'department', 'team', 
             'actual_productivity', 'no_of_style_change', 'productivity_ratio']
-              
+            
+ 
 #Boxplot  outlier detection 
 for attr in df:
     if (attr not in att_list):
         outlier_df= pd.concat([outlier_df, bloxplot(attr)])
-        #Boxplot outlier detection (showing graphs)
-        attrlist = [x for x in df[attr]]
-        attrlist = sorted(attrlist)
-        attr_array = np.array(attrlist)
+        #Showing graphs
         pretty_graphs(attr)
+
 
 #outlier_df.dropna(inplace=True)
 
