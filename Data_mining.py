@@ -5,43 +5,27 @@ Created on Mon Dec  2 13:12:48 2024
 @author: panos
 """
 
-
 import matplotlib.pyplot as plt
 import pandas as pd
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+import numpy as np
+import preprocessing as pp
 
 
-pd.set_option('display.max_rows',10)
-pd.set_option('display.max_columns',None)
+outliers,clean = pp.run()
 
-data = pd.read_csv("""C:/Users/panos/Desktop/Code/Data_mining/productivity+prediction+of+garment+employees/garments_worker_productivity.csv""")
-df = pd.DataFrame(data)
+# New Antecedent/Consequent objects hold universe variables and membership functions
+ratio_prod = ctrl.Antecedent(clean['productivity_ratio'], 'ratio_prod')#Generate the array [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+act_prod = ctrl.Antecedent(clean['actual_productivity'], 'act_prod')
+concern = ctrl.Consequent(np.arange(0, 11, 1), 'concern')
 
+concern['low'] = fuzz.trapmf(concern.universe, [0, 0, 2, 4]) #edo kathorizo ta akra kai to meso ton trigonon
+concern['medium'] = fuzz.trapmf(concern.universe, [2, 4, 5,7])
+concern['high'] = fuzz.trapmf(concern.universe, [7, 7,10, 10])
 
-df['wip'].fillna(0,inplace = True)
-#a.append(df['actual_productivity']/df['targeted_productivity'])
-df['productivity_ratio'] = df['actual_productivity']/df['targeted_productivity']
-
-df = df.round({'actual_productivity': 4, 'productivity_ratio': 4, 'no_of_workers': 0})
-
-df['department'].replace(to_replace = 'sweing',value = 'sewing',inplace = True)
-
-print(df.where(df['wip'] != 0).dropna())
-
-actual_prod_mean = df['actual_productivity'].mean()
-targeted_prod_mean = df['targeted_productivity'].mean()
-ratio_prod_mean = df['productivity_ratio'].mean()
-print("Actual prod mean:",actual_prod_mean)
-print("Targeted prod mean:",targeted_prod_mean)
-print("Ratio prod mean:",ratio_prod_mean)
-
-
-correlation_actual_overtime = df[['actual_productivity','over_time']].corr(method='pearson')
-correlation_ratio_overtime = df[['productivity_ratio','over_time']].corr(method='pearson')
-
-df1 = df.where(df['team'] == 1)
-df1.dropna(inplace = True)
-
-plt.plot(df1['productivity_ratio'])
-plt.show()
-
-print(df1['productivity_ratio'].mean())
+act_prod.automf(3)
+ratio_prod.automf(3)
+ratio_prod.view()
+act_prod.view()
+concern.view()
