@@ -36,8 +36,8 @@ production_concern['high'] = fuzz.trapmf(production_concern.universe, [6, 8, 10,
 
 # Rules
 rule1 = ctrl.Rule(act_prod['poor'] & ratio_prod['poor'], production_concern['high'])
-rule2 = ctrl.Rule(act_prod['poor'] & ratio_prod['average'], production_concern['low'], expectation_concern['low'])
-rule7 = ctrl.Rule(act_prod['poor'] & ratio_prod['average'], expectation_concern['low'])
+rule2a = ctrl.Rule(act_prod['poor'] & ratio_prod['average'], production_concern['low'])
+rule2b = ctrl.Rule(act_prod['poor'] & ratio_prod['average'],expectation_concern['low'])
 rule3 = ctrl.Rule(act_prod['average'] & ratio_prod['average'], production_concern['medium'])
 rule4 = ctrl.Rule(act_prod['average'] & ratio_prod['good'], expectation_concern['medium'])
 rule5 = ctrl.Rule(act_prod['good'] & ratio_prod['poor'], expectation_concern['high'])
@@ -45,7 +45,7 @@ rule6 = ctrl.Rule(act_prod['good'] & (ratio_prod['average'] | ratio_prod['good']
 
 
 #Control System Creation and Simulation
-concern_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7])#Create Control System using "ControlSystem" class from the skfuzzy.control module
+concern_ctrl = ctrl.ControlSystem([rule1, rule2a, rule2b, rule3, rule4, rule5, rule6])#Create Control System using "ControlSystem" class from the skfuzzy.control module
 
 concern_sim = ctrl.ControlSystemSimulation(concern_ctrl)
 
