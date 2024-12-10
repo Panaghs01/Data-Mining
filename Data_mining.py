@@ -51,6 +51,8 @@ rule3a = ctrl.Rule(actual_productivity_fuzzy['average'] & productivity_ratio_fuz
 rule3b = ctrl.Rule(actual_productivity_fuzzy['average'] & productivity_ratio_fuzzy['average'], expectation_concern['low'])
 rule4a = ctrl.Rule(actual_productivity_fuzzy['average'] & productivity_ratio_fuzzy['good'], expectation_concern['medium'])
 rule4b = ctrl.Rule(actual_productivity_fuzzy['average'] & productivity_ratio_fuzzy['good'], production_concern['low'])
+rule4c = ctrl.Rule(actual_productivity_fuzzy['average'] & productivity_ratio_fuzzy['poor'], production_concern['medium'])
+rule4d = ctrl.Rule(actual_productivity_fuzzy['average'] & productivity_ratio_fuzzy['poor'], expectation_concern['high'])
 
 rule5a = ctrl.Rule(actual_productivity_fuzzy['good'] & productivity_ratio_fuzzy['poor'], expectation_concern['high'])
 rule5b = ctrl.Rule(actual_productivity_fuzzy['good'] & productivity_ratio_fuzzy['poor'], production_concern['medium'])
@@ -59,15 +61,17 @@ rule6b = ctrl.Rule(actual_productivity_fuzzy['good'] & (productivity_ratio_fuzzy
 #rule7 = ctrl.Rule(actual_productivity_fuzzy['good'], production_concern['low'])
 
 # Control System Creation and Simulation
-concern_ctrl = ctrl.ControlSystem([rule1a, rule1b, rule2a, rule2b, rule3a, rule3b, rule4a, rule4b, rule5a, rule5b, rule6a, rule6b]) # Create Control System using "ControlSystem" class from the skfuzzy.control module
+concern_ctrl = ctrl.ControlSystem([rule1a, rule1b, rule2a, rule2b, rule3a, rule3b,
+                                   rule4a, rule4b, rule4c, rule4d, rule5a, rule5b,
+                                   rule6a, rule6b])
  
 simulation = ctrl.ControlSystemSimulation(concern_ctrl)
 
 expectation_concer_list = []
 production_concer_list = []
 
-simulation.input['actual_productivity_fuzzy'] = 0.8
-simulation.input['productivity_ratio_fuzzy'] = 0.5
+simulation.input['actual_productivity_fuzzy'] = 0.2
+simulation.input['productivity_ratio_fuzzy'] = 1
 
 simulation.compute()
 
