@@ -97,5 +97,8 @@ for index,item in clean[['actual_productivity','productivity_ratio']].iterrows()
 
 
 #print(concern_sim.output)
-print(expectation_concern_list)
-print(production_concern_list)
+clean['expectation_concern'] = expectation_concern_list
+clean['production_concern'] = production_concern_list
+    
+    
+print(clean)    
