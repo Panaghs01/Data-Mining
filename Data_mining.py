@@ -12,18 +12,21 @@ outliers,clean = pp.run()
 #Generate array from 0 to a little above productivity ratio max value
 productivity_ratio_fuzzy = ctrl.Antecedent(np.arange(0, 2.1, 0.1), 'productivity_ratio_fuzzy') 
 #Generate array from 0 to a little above actual productivity max value
-actual_productivity_fuzzy = ctrl.Antecedent(np.arange(0, 1.1, 0.1), 'actual_productivity_fuzzy')
+actual_productivity_fuzzy = ctrl.Antecedent(np.arange(0, 1.3, 0.1), 'actual_productivity_fuzzy')
 
 expectation_concern = ctrl.Consequent(np.arange(0, 11, 1), 'expectation_concern')
 production_concern = ctrl.Consequent(np.arange(0, 11, 1), 'production_concern')
 
-actual_productivity_fuzzy['good'] = fuzz.trapmf(actual_productivity_fuzzy.universe,[0.8,0.85,1,1])
-actual_productivity_fuzzy['average'] = fuzz.trapmf(actual_productivity_fuzzy.universe, [0.6,0.7,0.8,0.85])
-actual_productivity_fuzzy['poor'] = fuzz.trapmf(actual_productivity_fuzzy.universe,[0,0,0.5,0.7])
+act_mean = np.mean(clean['actual_productivity'])
+act_std = np.std(clean['actual_productivity'])
 
-productivity_ratio_fuzzy['good'] = fuzz.trapmf(productivity_ratio_fuzzy.universe, [1.1,1.5,2,2])
-productivity_ratio_fuzzy['average'] = fuzz.trapmf(productivity_ratio_fuzzy.universe, [0.8,0.9,1.1,1.2])
-productivity_ratio_fuzzy['poor'] = fuzz.trapmf(productivity_ratio_fuzzy.universe, [0,0,0.6,0.9])
+actual_productivity_fuzzy['poor'] = fuzz.trapmf(actual_productivity_fuzzy.universe,[0,0,act_mean-2*act_std,act_mean-act_std])
+actual_productivity_fuzzy['average'] = fuzz.trapmf(actual_productivity_fuzzy.universe, [act_mean-2*act_std,act_mean-act_std,act_mean+act_std,act_mean+2*act_std])
+actual_productivity_fuzzy['good'] = fuzz.trapmf(actual_productivity_fuzzy.universe,[act_mean+act_std,act_mean+2*act_std,1.3,1.3])
+
+productivity_ratio_fuzzy['poor'] = fuzz.trapmf(productivity_ratio_fuzzy.universe, [0,0,0.9,1])
+productivity_ratio_fuzzy['average'] = fuzz.trimf(productivity_ratio_fuzzy.universe, [0.9,1,1.1])
+productivity_ratio_fuzzy['good'] = fuzz.trapmf(productivity_ratio_fuzzy.universe, [1,1.1,2,2])
 
 # Consequent membership function is formed!
 expectation_concern['low'] = fuzz.trapmf(expectation_concern.universe, [0, 0, 2, 4]) 
@@ -35,8 +38,8 @@ production_concern['low'] = fuzz.trapmf(production_concern.universe, [0, 0, 2, 4
 production_concern['medium'] = fuzz.trapmf(production_concern.universe, [2, 4, 6, 8])
 production_concern['high'] = fuzz.trapmf(production_concern.universe, [6, 8, 10, 10])
 
-productivity_ratio_fuzzy.view()
 actual_productivity_fuzzy.view()
+productivity_ratio_fuzzy.view()
 
 # Rules
 rule1a = ctrl.Rule(actual_productivity_fuzzy['poor'] & productivity_ratio_fuzzy['poor'], production_concern['high'])

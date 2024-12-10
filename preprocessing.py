@@ -103,9 +103,9 @@ def run():
     targeted_prod_mean = df['targeted_productivity'].mean()
     ratio_prod_mean = df['productivity_ratio'].mean()
     print('EEEEEEEEE',df['actual_productivity'].std())
-    # print("Actual prod mean:",actual_prod_mean)
-    # print("Targeted prod mean:",targeted_prod_mean)
-    # print("Ratio prod mean:",ratio_prod_mean)
+    print("Actual prod mean:",actual_prod_mean)
+    print("Targeted prod mean:",targeted_prod_mean)
+    print("Ratio prod mean:",ratio_prod_mean)
     
     correlation_matrix = []
     corr_df = df[['department','team','no_of_workers','no_of_style_change','targeted_productivity',
@@ -123,9 +123,7 @@ def run():
     #     plt.show()
     #     print(correlation_actual)
     #     print(correlation_ratio)
-    #     print()
-    
-            
+    #     print() 
             
     # ---------------------------------------------------------------------- #
     # Outlier detection in actual productivity using z score
