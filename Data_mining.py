@@ -7,6 +7,9 @@ import preprocessing as pp
 
 
 outliers,clean = pp.run()
+pd.set_option('display.max_rows',20)
+pd.set_option('display.max_columns',None)
+
 
 # Antecedent/Consequent
 # Generate array from 0 to a little above productivity ratio max value
@@ -121,12 +124,17 @@ sorted_avg_dict = sorted(avg_dict.items(), key=lambda kv: kv[1])
 print(sorted_avg_dict)
 
 
-kati = clean.where(clean['production_concern'] >= 5)
+kati = clean.where(clean['production_concern'] >= 4.5)
 kati.dropna(inplace = True)
 print(kati)
+katikato = clean.where(clean['production_concern'] < 4.5)
+katikato.dropna(inplace = True)
 
 
-    
+lista = ['no_of_workers','no_of_style_change','targeted_productivity',
+                'actual_productivity','smv','wip','over_time','incentive']
+
+
 corr_df = kati[['department','team','no_of_workers','no_of_style_change','targeted_productivity',
                 'actual_productivity','smv','wip','over_time','incentive','expectation_concern','production_concern']]
 
@@ -138,11 +146,6 @@ for i in corr_df.columns:
     #     method='pearson')
     x = corr_df['production_concern']
     y = corr_df[i]
-    plt.title(i)
-    plt.scatter(x, y)
-    plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))
-         (np.unique(x)), color='red')
-    plt.show()
     correlation = corr_df[['production_concern',i]].corr(
         method='pearson')
     # print(correlation_actual)
@@ -150,14 +153,10 @@ for i in corr_df.columns:
     print()
     # print(correlation['production_concern'].loc[i])
 
-b = kati.groupby('team')
 
-for i in b:
-    print(i[0],len(i[1]))
+print('kati:\n',kati[lista].mean())
+print('kati kato:\n',katikato[lista].mean())
 
+diff = np.sqrt(np.square(kati[lista].mean()) - np.square(katikato[lista].mean()))
 
-
-
-
-
-    
+print('Diafora:\n',diff)
