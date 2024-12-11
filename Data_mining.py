@@ -8,8 +8,8 @@ import preprocessing as pp
 
 outliers,clean = pp.run()
 
-#Antecedent/Consequent 
-#Generate array from 0 to a little above productivity ratio max value
+# Antecedent/Consequent
+# Generate array from 0 to a little above productivity ratio max value
 productivity_ratio_fuzzy = ctrl.Antecedent(np.arange(0, 2.1, 0.1), 'productivity_ratio_fuzzy') 
 #Generate array from 0 to a little above actual productivity max value
 actual_productivity_fuzzy = ctrl.Antecedent(np.arange(0, 1.3, 0.1), 'actual_productivity_fuzzy')
@@ -93,28 +93,36 @@ for index,item in clean[['actual_productivity','productivity_ratio']].iterrows()
     production_concern_list.append(simulation.output['production_concern'])
 
 
-
 #print(concern_sim.output)
 clean['expectation_concern'] = expectation_concern_list
 clean['production_concern'] = production_concern_list
     
-    
+# Generating a grouped dataframe for each team.
 a = clean.groupby('team')
 
+# Creating an average production concern for every team based
+# on a weighted average formula.
 avg_dict = {}
 for i in a:
-    
-    avg_dict[i[0]] = i[1]['production_concern'].mean()
-    
-    plt.scatter(np.arange(0, i[1]['production_concern'].size),i[1]['production_concern'])
-    plt.show()
+    numenator=0
+    denominator=0
+    for value in i[1]['production_concern']:
+        numenator += value * (value/10)
+        denominator += value/10
 
+        avg_dict[i[0]] = round((numenator/denominator), 3)
 
+        #plt.scatter(np.arange(0, i[1]['production_concern'].size),i[1]['production_concern'])
+        #plt.show()
+
+# Sorting the average production concern dictionary.
+sorted_avg_dict = sorted(avg_dict.items(), key=lambda kv: kv[1])
 print(avg_dict)
+
 # corr_df = clean[['department','team','no_of_workers','no_of_style_change','targeted_productivity',
 #                'actual_productivity','smv','wip','over_time','incentive','expectation_concern','production_concern']]
 
-# #Correlation plots
+# # Correlation plots
 # for i in corr_df.columns:
 #     correlation_actual = corr_df[['expectation_concern',i]].corr(
 #         method='pearson')
