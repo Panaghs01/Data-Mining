@@ -21,7 +21,7 @@ act_mean = np.mean(clean['actual_productivity'])
 act_std = np.std(clean['actual_productivity'])
 
 actual_productivity_fuzzy['poor'] = fuzz.trapmf(actual_productivity_fuzzy.universe,[0,0,act_mean-1.5*act_std,act_mean-act_std])
-actual_productivity_fuzzy['average'] = fuzz.trapmf(actual_productivity_fuzzy.universe, [act_mean-1.5*act_std,act_mean-act_std,act_mean+act_std,act_mean+1.5*act_std])
+actual_productivity_fuzzy['average'] = fuzz.trapmf(actual_productivity_fuzzy.universe, [act_mean-1.5*act_std, act_mean-act_std, act_mean+act_std, act_mean+1.5*act_std])
 actual_productivity_fuzzy['good'] = fuzz.trapmf(actual_productivity_fuzzy.universe,[act_mean+act_std,act_mean+1.5*act_std,1.3,1.3])
 
 productivity_ratio_fuzzy['poor'] = fuzz.trapmf(productivity_ratio_fuzzy.universe, [0,0,0.9,1])
@@ -99,41 +99,61 @@ clean['production_concern'] = production_concern_list
     
 # Generating a grouped dataframe for each team.
 a = clean.groupby('team')
-
+kati = pd.DataFrame()
 # Creating an average production concern for every team based
 # on a weighted average formula.
 avg_dict = {}
 for i in a:
-    numenator=0
+    numerator=0
     denominator=0
     for value in i[1]['production_concern']:
-        numenator += value * (value/10)
+        numerator += value * (value/10)
         denominator += value/10
 
-        avg_dict[i[0]] = round((numenator/denominator), 3)
+        avg_dict[i[0]] = round((numerator/denominator), 3)
 
-        #plt.scatter(np.arange(0, i[1]['production_concern'].size),i[1]['production_concern'])
-        #plt.show()
+    plt.scatter(np.arange(0, i[1]['production_concern'].size),i[1]['production_concern'])
+    plt.title(f'Team:{i[0]}')
+    plt.show()
 
 # Sorting the average production concern dictionary.
 sorted_avg_dict = sorted(avg_dict.items(), key=lambda kv: kv[1])
-print(avg_dict)
-
-# corr_df = clean[['department','team','no_of_workers','no_of_style_change','targeted_productivity',
-#                'actual_productivity','smv','wip','over_time','incentive','expectation_concern','production_concern']]
-
-# # Correlation plots
-# for i in corr_df.columns:
-#     correlation_actual = corr_df[['expectation_concern',i]].corr(
-#         method='pearson')
-#     correlation_ratio = corr_df[['production_concern',i]].corr(
-#         method='pearson')
-#     print(correlation_actual)
-#     print(correlation_ratio)
-#     print() 
+print(sorted_avg_dict)
 
 
+kati = clean.where(clean['production_concern'] >= 5)
+kati.dropna(inplace = True)
+print(kati)
 
+
+    
+corr_df = kati[['department','team','no_of_workers','no_of_style_change','targeted_productivity',
+                'actual_productivity','smv','wip','over_time','incentive','expectation_concern','production_concern']]
+
+# Correlation plots
+
+    
+for i in corr_df.columns:
+    # correlation_actual = corr_df[['expectation_concern',i]].corr(
+    #     method='pearson')
+    x = corr_df['production_concern']
+    y = corr_df[i]
+    plt.title(i)
+    plt.scatter(x, y)
+    plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))
+         (np.unique(x)), color='red')
+    plt.show()
+    correlation = corr_df[['production_concern',i]].corr(
+        method='pearson')
+    # print(correlation_actual)
+    print(correlation['production_concern'])
+    print()
+    # print(correlation['production_concern'].loc[i])
+
+b = kati.groupby('team')
+
+for i in b:
+    print(i[0],len(i[1]))
 
 
 

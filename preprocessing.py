@@ -102,7 +102,6 @@ def run():
     actual_prod_mean = df['actual_productivity'].mean()
     targeted_prod_mean = df['targeted_productivity'].mean()
     ratio_prod_mean = df['productivity_ratio'].mean()
-    print('EEEEEEEEE',df['actual_productivity'].std())
     print("Actual prod mean:",actual_prod_mean)
     print("Targeted prod mean:",targeted_prod_mean)
     print("Ratio prod mean:",ratio_prod_mean)
