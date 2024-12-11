@@ -4,7 +4,7 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import numpy as np
 import preprocessing as pp
-
+import math
 
 outliers,clean = pp.run()
 pd.set_option('display.max_rows',20)
@@ -148,6 +148,12 @@ for i in corr_df.columns:
     y = corr_df[i]
     correlation = corr_df[['production_concern',i]].corr(
         method='pearson')
+
+    plt.title(i)
+    plt.scatter(x, y)
+    plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))
+         (np.unique(x)), color='red')
+    plt.show()
     # print(correlation_actual)
     print(correlation['production_concern'])
     print()
@@ -157,6 +163,6 @@ for i in corr_df.columns:
 print('kati:\n',kati[lista].mean())
 print('kati kato:\n',katikato[lista].mean())
 
-diff = np.sqrt(np.square(kati[lista].mean()) - np.square(katikato[lista].mean()))
+diff = np.sqrt(np.square(kati[lista].mean()-katikato[lista].mean()))
 
 print('Diafora:\n',diff)
