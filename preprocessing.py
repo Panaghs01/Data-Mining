@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from scipy import stats
 
 # ----------------------------------------------------------------- #
 def run():
@@ -145,8 +146,13 @@ def run():
             outliers.append(row)
             
     print(outliers)
-    
-    plt.hist(df['actual_productivity'], bins=30, edgecolor='yellow', color='purple')
+
+    plt.hist(df['actual_productivity'], bins=30, density=True, edgecolor='yellow', color='purple')
+    xmin, xmax = plt.xlim()
+    x = np.linspace(xmin, xmax, 100)
+    p = stats.norm.pdf(x, mean, std)
+
+    plt.plot(x, p, 'k')
     plt.show()
     
     # ---------------------------------------------------------------------- #
@@ -187,4 +193,3 @@ def run():
     print("Clean Df")
     
     return outlier_df,clean_df
-

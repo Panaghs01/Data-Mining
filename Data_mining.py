@@ -139,25 +139,22 @@ corr_df = kati[['department','team','no_of_workers','no_of_style_change','target
                 'actual_productivity','smv','wip','over_time','incentive','expectation_concern','production_concern']]
 
 # Correlation plots
-
-    
 for i in corr_df.columns:
-    # correlation_actual = corr_df[['expectation_concern',i]].corr(
-    #     method='pearson')
-    x = corr_df['production_concern']
-    y = corr_df[i]
-    correlation = corr_df[['production_concern',i]].corr(
-        method='pearson')
+    for j in ['production_concern', 'expectation_concern']:
+        # correlation_actual = corr_df[['expectation_concern',i]].corr(
+        #     method='pearson')
+        x = corr_df[j]
+        y = corr_df[i]
+        correlation = corr_df[[j,i]].corr(
+            method='pearson')
 
-    plt.title(i)
-    plt.scatter(x, y)
-    plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))
-         (np.unique(x)), color='red')
-    plt.show()
-    # print(correlation_actual)
-    print(correlation['production_concern'])
-    print()
-    # print(correlation['production_concern'].loc[i])
+        plt.title(f"{i}, {j}")
+        plt.scatter(x, y)
+        plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))
+             (np.unique(x)), color='red')
+        plt.show()
+        print(correlation[j])
+        print()
 
 
 print('kati:\n',kati[lista].mean())
