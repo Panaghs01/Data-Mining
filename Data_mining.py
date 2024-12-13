@@ -123,24 +123,29 @@ for i in a:
 sorted_avg_dict = sorted(avg_dict.items(), key=lambda kv: kv[1])
 print(sorted_avg_dict)
 
+lista = ['no_of_workers','no_of_style_change','targeted_productivity','actual_productivity','smv','wip','over_time','incentive']
 
-kati = clean.where(clean['production_concern'] >= 4.5)
-kati.dropna(inplace = True)
-print(kati)
-katikato = clean.where(clean['production_concern'] < 4.5)
-katikato.dropna(inplace = True)
+for j in ['production_concern', 'expectation_concern']:
+    kati = clean.where(clean[j] >= 5)
+    kati.dropna(inplace = True)
+    print(kati)
+    print(j)
+    katikato = clean.where(clean[j] < 5)
+    katikato.dropna(inplace = True)
+
+    print('kati:\n',kati[lista].mean())
+    print('kati kato:\n',katikato[lista].mean())
+    
+    diff = np.sqrt(np.square(kati[lista].mean()-katikato[lista].mean()))
+    
+    print('Diafora:\n',diff)
 
 
-lista = ['no_of_workers','no_of_style_change','targeted_productivity',
-                'actual_productivity','smv','wip','over_time','incentive']
 
+    corr_df = kati[['department','team','no_of_workers','no_of_style_change','targeted_productivity','actual_productivity','smv','wip','over_time','incentive','expectation_concern','production_concern']]
 
-corr_df = kati[['department','team','no_of_workers','no_of_style_change','targeted_productivity',
-                'actual_productivity','smv','wip','over_time','incentive','expectation_concern','production_concern']]
-
-# Correlation plots
-for i in corr_df.columns:
-    for j in ['production_concern', 'expectation_concern']:
+    # Correlation plots
+    for i in corr_df.columns:
         # correlation_actual = corr_df[['expectation_concern',i]].corr(
         #     method='pearson')
         x = corr_df[j]
@@ -156,10 +161,3 @@ for i in corr_df.columns:
         print(correlation[j])
         print()
 
-
-print('kati:\n',kati[lista].mean())
-print('kati kato:\n',katikato[lista].mean())
-
-diff = np.sqrt(np.square(kati[lista].mean()-katikato[lista].mean()))
-
-print('Diafora:\n',diff)
