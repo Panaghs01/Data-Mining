@@ -96,15 +96,15 @@ def run():
     df.replace({'sewing':0},inplace = True)
     df.replace({'finishing':1},inplace = True)
     
-    print(df)
+    #print(df)
     
     #Calculating mean
     actual_prod_mean = df['actual_productivity'].mean()
     targeted_prod_mean = df['targeted_productivity'].mean()
     ratio_prod_mean = df['productivity_ratio'].mean()
-    print("Actual prod mean:",actual_prod_mean)
-    print("Targeted prod mean:",targeted_prod_mean)
-    print("Ratio prod mean:",ratio_prod_mean)
+    # print("Actual prod mean:",actual_prod_mean)
+    # print("Targeted prod mean:",targeted_prod_mean)
+    # print("Ratio prod mean:",ratio_prod_mean)
     
     correlation_matrix = []
     corr_df = df[['department','team','no_of_workers','no_of_style_change','targeted_productivity',
@@ -132,21 +132,21 @@ def run():
     mean = np.mean(df['actual_productivity'])
     std = np.std(df['actual_productivity'])
     normal_range=(mean-3*std,mean+3*std)
-    print(normal_range)
+    # print(normal_range)
     
     minprod = min(df['actual_productivity'])
     maxprod = max(df['actual_productivity'])
-    print(minprod,maxprod)
+   # print(minprod,maxprod)
     outliers = []
-    
+   
     for row in df['actual_productivity']:
         z = abs(row-mean)/std
         if (z > 3):
             outliers.append(row)
             
-    print(outliers)
+   #  print(outliers)
 
-    # Applying a Gaussian graph on actual productivity and printing it.
+     # Applying a Gaussian graph on actual productivity and printing it.
     plt.hist(df['actual_productivity'], bins=30, density=True, edgecolor='yellow', color='purple')
     xmin, xmax = plt.xlim()
     x = np.linspace(xmin, xmax, 100)
@@ -156,22 +156,22 @@ def run():
     plt.title("Histogram and Gaussian of actual_productivity.")
     plt.show()
     
-    # ---------------------------------------------------------------------- #
+     # ---------------------------------------------------------------------- #
     
-    #Storing outliers in a new df
+     #Storing outliers in a new df
     outlier_df = pd.DataFrame()
     clean_df = pd.DataFrame()
     
-    # Do not detect outliers using boxplot on these attributes
-    # We detect outliers using z score for actual productivity
-    # No reason to detect outliers in the first five,
-    # Productivity ratio is calculated using the data, so there isnt a reason to
-    # Detect outliers there too
-    # Finally, number of style change is integers, either 0,1 or 2 
+     # Do not detect outliers using boxplot on these attributes
+     # We detect outliers using z score for actual productivity
+     # No reason to detect outliers in the first five,
+     # Productivity ratio is calculated using the data, so there isnt a reason to
+     # Detect outliers there too
+     # Finally, number of style change is integers, either 0,1 or 2 
     att_list = ['date', 'quarter', 'day', 'department', 'team', 
-                'actual_productivity', 'no_of_style_change', 'productivity_ratio']
-    
-    
+               'actual_productivity', 'no_of_style_change', 'productivity_ratio']
+   
+   
     #Boxplot outlier detection 
     for attr in df:
         if (attr not in att_list):
@@ -181,12 +181,12 @@ def run():
     
     outlier_df = bloxplot(df)
 
-    print(outlier_df)
-    print("Outlier Df")
+    # print(outlier_df)
+    # print("Outlier Df")
     
     # ----------------------------------------------------------------- #
 
     clean_df = mrclean(df)
-    print(clean_df)
-    print("Clean Df")
+    # print(clean_df)
+    # print("Clean Df")
     return outlier_df,clean_df

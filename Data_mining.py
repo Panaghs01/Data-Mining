@@ -27,9 +27,9 @@ actual_productivity_fuzzy['poor'] = fuzz.trapmf(actual_productivity_fuzzy.univer
 actual_productivity_fuzzy['average'] = fuzz.trapmf(actual_productivity_fuzzy.universe, [act_mean-1.5*act_std, act_mean-act_std, act_mean+act_std, act_mean+1.5*act_std])
 actual_productivity_fuzzy['good'] = fuzz.trapmf(actual_productivity_fuzzy.universe,[act_mean+act_std,act_mean+1.5*act_std,1.3,1.3])
 
-productivity_ratio_fuzzy['poor'] = fuzz.trapmf(productivity_ratio_fuzzy.universe, [0,0,0.9,1])
-productivity_ratio_fuzzy['average'] = fuzz.trimf(productivity_ratio_fuzzy.universe, [0.9,1,1.1])
-productivity_ratio_fuzzy['good'] = fuzz.trapmf(productivity_ratio_fuzzy.universe, [1,1.1,2,2])
+productivity_ratio_fuzzy['poor'] = fuzz.trapmf(productivity_ratio_fuzzy.universe, [0,0,0.8,0.9])
+productivity_ratio_fuzzy['average'] = fuzz.trapmf(productivity_ratio_fuzzy.universe, [0.8,0.9,1.1,1.2])
+productivity_ratio_fuzzy['good'] = fuzz.trapmf(productivity_ratio_fuzzy.universe, [1.1,1.2,2,2])
 
 # Consequent membership function is formed!
 expectation_concern['low'] = fuzz.trapmf(expectation_concern.universe, [0, 0, 2, 4]) 
@@ -88,7 +88,7 @@ for index,item in clean[['actual_productivity','productivity_ratio']].iterrows()
     simulation.compute()
 
     #production_concern.view(sim=simulation)
-    #expectation_concern.view(sim=simulation)
+    expectation_concern.view(sim=simulation)
 
     #print(simulation.output)
 
