@@ -73,8 +73,7 @@ def run():
 
         plt.subplots_adjust(hspace=0)
         plt.show()
-        
-        
+
         
     pd.set_option('display.max_rows',10)
     pd.set_option('display.max_columns',None)
@@ -147,12 +146,14 @@ def run():
             
     print(outliers)
 
+    # Applying a Gaussian graph on actual productivity and printing it.
     plt.hist(df['actual_productivity'], bins=30, density=True, edgecolor='yellow', color='purple')
     xmin, xmax = plt.xlim()
     x = np.linspace(xmin, xmax, 100)
     p = stats.norm.pdf(x, mean, std)
 
     plt.plot(x, p, 'k')
+    plt.title("Histogram and Gaussian of actual_productivity.")
     plt.show()
     
     # ---------------------------------------------------------------------- #
@@ -175,21 +176,17 @@ def run():
     for attr in df:
         if (attr not in att_list):
             #Showing graphs
-            #pretty_graphs(attr)
-            pass
+            pretty_graphs(attr)
+
     
     outlier_df = bloxplot(df)
-    
-    
+
     print(outlier_df)
     print("Outlier Df")
     
     # ----------------------------------------------------------------- #
-    
-    
-    
+
     clean_df = mrclean(df)
     print(clean_df)
     print("Clean Df")
-    
     return outlier_df,clean_df
