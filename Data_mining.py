@@ -95,41 +95,39 @@ for index,item in clean[['actual_productivity','productivity_ratio']].iterrows()
     expectation_concern_list.append(simulation.output['expectation_concern'])
     production_concern_list.append(simulation.output['production_concern'])
 
-
-#print(concern_sim.output)
 clean['expectation_concern'] = expectation_concern_list
 clean['production_concern'] = production_concern_list
     
 # Generating a grouped dataframe for each team.
 a = clean.groupby('team')
 kati = pd.DataFrame()
-# Creating an average production concern for every team based
-# on a weighted average formula.
-avg_dict = {}
-for i in a:
-    numerator=0
-    denominator=0
-    for value in i[1]['production_concern']:
-        numerator += value * (value/10)
-        denominator += value/10
-
-        avg_dict[i[0]] = round((numerator/denominator), 3)
-
-    plt.scatter(np.arange(0, i[1]['production_concern'].size),i[1]['production_concern'])
-    plt.title(f'Team:{i[0]}')
-    plt.show()
-
-# Sorting the average production concern dictionary.
-sorted_avg_dict = sorted(avg_dict.items(), key=lambda kv: kv[1])
-print(sorted_avg_dict)
 
 lista = ['no_of_workers','no_of_style_change','targeted_productivity','actual_productivity','smv','wip','over_time','incentive']
 
 for j in ['production_concern', 'expectation_concern']:
+    print(j)
+    # Creating an average production concern for every team based
+    # on a weighted average formula.
+    avg_dict = {}
+    for i in a:
+        numerator=0
+        denominator=0
+        for value in i[1][j]:
+            numerator += value * (value/10)
+            denominator += value/10
+
+            avg_dict[i[0]] = round((numerator/denominator), 3)
+
+        plt.scatter(np.arange(0, i[1][j].size),i[1][j])
+        plt.title(f'Team:{i[0]}')
+        plt.show()
+        
+    # Sorting the average production concern dictionary.
+    sorted_avg_dict = sorted(avg_dict.items(), key=lambda kv: kv[1])
+    print(sorted_avg_dict)
+    #Differences in attributes between low and high concerning entries
     kati = clean.where(clean[j] >= 5)
     kati.dropna(inplace = True)
-    print(kati)
-    print(j)
     katikato = clean.where(clean[j] < 5)
     katikato.dropna(inplace = True)
 
@@ -145,19 +143,19 @@ for j in ['production_concern', 'expectation_concern']:
     corr_df = kati[['department','team','no_of_workers','no_of_style_change','targeted_productivity','actual_productivity','smv','wip','over_time','incentive','expectation_concern','production_concern']]
 
     # Correlation plots
-    for i in corr_df.columns:
-        # correlation_actual = corr_df[['expectation_concern',i]].corr(
-        #     method='pearson')
-        x = corr_df[j]
-        y = corr_df[i]
-        correlation = corr_df[[j,i]].corr(
-            method='pearson')
+    # for i in corr_df.columns:
+    #     # correlation_actual = corr_df[['expectation_concern',i]].corr(
+    #     #     method='pearson')
+    #     x = corr_df[j]
+    #     y = corr_df[i]
+    #     correlation = corr_df[[j,i]].corr(
+    #         method='pearson')
 
-        plt.title(f"{i}, {j}")
-        plt.scatter(x, y)
-        plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))
-             (np.unique(x)), color='red')
-        plt.show()
-        print(correlation[j])
-        print()
+    #     plt.title(f"{i}, {j}")
+    #     plt.scatter(x, y)
+    #     plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))
+    #          (np.unique(x)), color='red')
+    #     plt.show()
+    #     print(correlation[j])
+    #     print()
 
